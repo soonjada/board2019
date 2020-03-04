@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.management">
+
+
+	<select id="listmember" resultType="com.board.domain.MembersVO">
+
+		select *
+		from
+		members3
+		order by regDate
+
+	</select>
+	
+	<select id="viewmember" resultType="com.board.domain.MembersVO">
+
+		select *
+		from
+		members3
+		where userId = #{userId}
+		
+	</select>
+	
+	<update id="level" parameterType="com.board.domain.MembersVO">
+		update members3
+		set
+		memType =
+		#{memType}
+		where userId = #{userId}
+	</update>
+	
+	<select id="boardmember" resultType="com.board.domain.BoardVO">
+
+		select *
+		from
+		tbl_board3
+		where writerId = #{writerId}
+		order by bno desc
+		
+	</select>
+	
+	<select id="qnalist" resultType="com.board.domain.QnAVO">
+
+		select *
+		from
+		qna
+		order by result , bno
+		
+	</select>
+	
+	<select id="viewqna" parameterType="int" resultType="com.board.domain.QnAVO">
+
+		select *
+		from
+		qna
+		where bno = #{bno}
+
+	</select>
+	
+	<update id="ckqna" parameterType="com.board.domain.QnAVO">
+		update qna
+		set
+		result =
+		#{result}
+		where bno = #{bno}
+	</update>
+	
+	
+	<insert id="fileWrite" parameterType="com.board.domain.FileManagerVO">
+
+		insert into
+		file_manager(no,
+		originfilename, savefilename, extensionfilename, filesize, writer,writerId)
+		values(FILEMANAGER_NO_SEQ.NEXTVAL ,#{originFileName},#{saveFileName}, #{extensionFileName}, #{fileSize}, #{writer}, #{writerId})
+
+	</insert>
+	
+	<select id="fileName" resultType="com.board.domain.FileManagerVO">
+
+		select *
+		from
+		file_manager
+		where savefilename = #{saveFileName}
+		
+	</select>
+	
+	<select id="filelist" resultType="com.board.domain.FileManagerVO">
+
+		SELECT originfilename, savefilename, extensionfilename,TRUNC(filesize/1024,0) filesize, writer, writerId, no, regDate 
+		from
+		file_manager
+		order by no
+		
+	</select>
+	
+	<select id="fileview" parameterType="int" resultType="com.board.domain.FileManagerVO">
+
+		select *
+		from
+		file_manager
+		where no = #{no}
+
+	</select>
+	
+	<delete id="filedelete" parameterType="com.board.domain.FileManagerVO">
+		delete
+		from
+		file_manager
+		where savefilename = #{saveFileName}
+	</delete>
+	
+	<update id="replymodify" parameterType="com.board.domain.ReplyVO">
+		update re_board3
+		set
+		content =
+		#{content}
+		where rno = #{rno}
+	</update>
+	
+	<select id="replymodifyview" parameterType="int" resultType="com.board.domain.ReplyVO">
+
+		select *
+		from
+		re_board3
+		where rno = #{rno}
+
+	</select>
+	
+
+
+
+</mapper>

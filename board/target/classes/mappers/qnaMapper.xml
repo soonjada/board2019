@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.qna">
+
+<!-- 11.18 ver2  tableName members change to members2  -->
+
+	<!-- 회원가입 -->
+	<insert id="createqna" parameterType="com.board.domain.QnAVO">
+
+		insert into
+		qna(bno,
+		category, title, content, writer, writerId,img, result)
+		values(QNA_BNO_SEQ.NEXTVAL ,#{category},#{title}, #{content}, #{writer}, #{writerId}, #{img}, #{result})
+
+	</insert>
+
+	<select id="listqna" resultType="com.board.domain.QnAVO">
+
+		select *
+		from
+		qna
+		ORDER BY bno DESC
+
+	</select>
+	
+	<select id="adminqna" resultType="com.board.domain.QnAVO">
+
+		select *
+		from
+		qna
+		where writerId = #{writerId}
+		ORDER BY bno DESC
+
+	</select>
+	
+
+	<!-- 탈퇴 -->
+	<delete id="deleteqna" parameterType="com.board.domain.QnAVO">
+		delete from qna
+		where
+		bno = #{bno}
+
+	</delete>
+	
+	<update id="ckqna" parameterType="com.board.domain.QnAVO">
+		update qna
+		set
+		result =
+		#{result}
+		where bno = #{bno}
+	</update>
+	
+	<select id="viewqna" parameterType="int" resultType="com.board.domain.QnAVO">
+
+		select *
+		from
+		qna
+		where bno = #{bno}
+
+	</select>
+
+
+
+</mapper>

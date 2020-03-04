@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.qna_re">
+
+<!-- 11.18 ver2  table name re_board change to re_board2  -->
+
+	<!-- 문의댓글 조회 -->
+	<select id="qnareList" parameterType="int"
+		resultType="com.board.domain.QnAReVO">
+		select
+		bno, rno, content, writer, regDate
+		from
+		qna_re
+		where
+		bno =
+		#{bno}
+	</select>
+
+	<insert id="qnareWrite" parameterType="com.board.domain.QnAReVO">
+
+		insert into
+		qna_re(bno, rno, content, writer)
+		values(#{bno}, REBOARD2_RNO_SEQ.nextval, #{content}, #{writer})
+
+	</insert>
+	
+	<delete id="qnareDelete" parameterType="com.board.domain.QnAReVO">
+		delete from qna_re
+		where rno = #{rno}
+	
+	</delete>
+
+</mapper>

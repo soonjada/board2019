@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.board">
+
+	<!-- 11.18 ver2 tableName tbl_board change to tbl_board2 -->
+
+	<!-- 게시물 목록 -->
+	<select id="list" resultType="com.board.domain.BoardVO">
+		select
+		bno, title, content, writer,
+		regDate, viewCnt, writer_type, board_pass
+		from tbl_board3
+		ORDER BY bno DESC
+	</select>
+
+	<!-- 게시물 작성 -->
+	<insert id="write" parameterType="com.board.domain.BoardVO">
+		insert into
+		tbl_board3(bno,title, content, writer,imgUrl , writerId, writertype, boardpass)
+		values(TBLBOARD3_BNO_SEQ.NEXTVAL,#{title}, #{content}, #{writer},
+		#{imgUrl}, #{writerId}, #{writerType}, #{boardPass})
+	</insert>
+
+	<!-- 게시물 조회 -->
+	<select id="view" parameterType="int"
+		resultType="com.board.domain.BoardVO">
+		select *
+		<!-- bno, title, content, writer, regDate, viewCnt,
+		imgUrl, writerId -->
+		from
+		tbl_board3
+		where
+		bno = #{bno}
+	</select>
+
+	<!-- 게시물 수정 -->
+	<update id="modify" parameterType="com.board.domain.BoardVO">
+		update tbl_board3
+		set
+		title =
+		#{title},
+		content = #{content},
+		writer = #{writer},
+		imgUrl = #{imgUrl}
+		
+		where bno = #{bno}
+	</update>
+
+	<!-- 삭제?? -->
+	<delete id="delete" parameterType="com.board.domain.BoardVO">
+		delete
+		from tbl_board3
+		where bno
+		= #{bno}
+	</delete>
+
+	<update id="viewcnt" parameterType="com.board.domain.BoardVO">
+		update tbl_board3
+		set
+		viewcnt =
+		viewcnt+1
+		where bno = #{bno}
+	</update>
+
+	<select id="listPage" parameterType="com.board.domain.Criteria"
+		resultType="com.board.domain.BoardVO">
+		select bno, title, content, writer, regDate, viewCnt
+		from (
+		select bno, title, content, writer, regDate, viewCnt,
+		row_number()
+		over(order by bno desc) as rNum
+		from tbl_board3
+		) tb
+		where rNum between
+		#{rowStart} and #{rowEnd}
+		order by bno desc
+	</select>
+
+	<select id="listCount" resultType="int">
+	
+		<![CDATA[
+			select count(bno)
+			from tbl_board3
+			where bno > 0
+		]]>
+
+	</select>
+
+	<!-- 검색 -->
+	<select id="listSearch" resultType="com.board.domain.BoardVO"
+		parameterType="com.board.domain.SearchCriteria">
+
+		select bno, title, content, writer, regDate, viewCnt,writerType
+		from (
+		select bno,
+		title, content, writer, regDate, viewCnt,writerType,
+		row_number()
+		over(order by bno
+		desc) as rNum
+		from tbl_board3
+		<include refid="search"></include>
+		) tb
+		where rNum between ${rowStart} and ${rowEnd}
+		order by bno desc
+
+	</select>
+
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()"> where title like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'c'.toString()"> where content like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'w'.toString()"> where writer like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'tc'.toString()"> where (title like '%' || #{keyword} || '%') or (content
+				like '%' || #{keyword} || '%')</if>
+
+		</if>
+	</sql>
+
+	<select id="countSearch" resultType="int">
+		select count(bno)
+		from tbl_board3
+		<include refid="search"></include>
+
+	</select>
+	
+	<!-- 비밀글 체크 시작 -->
+	
+	<select id="ckPass" resultType="com.board.domain.BoardVO">
+
+		select bno, writer_type, board_pass
+		from
+		tbl_board3
+		where bno =
+		#{bno} and board_pass = #{boardPass}
+
+	</select>
+
+	<!-- 비밀글 체크 끝 -->
+
+
+
+
+</mapper>

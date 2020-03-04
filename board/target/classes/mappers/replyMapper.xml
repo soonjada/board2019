@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.reply">
+
+<!-- 11.18 ver2  table name re_board change to re_board2  -->
+
+	<!-- 게시물 조회 -->
+	<select id="replyList" parameterType="int"
+		resultType="com.board.domain.ReplyVO">
+		select
+		bno, rno, content, writer, regDate
+		from
+		re_board3
+		where
+		bno =
+		#{bno}
+	</select>
+
+	<insert id="replyWrite" parameterType="com.board.domain.ReplyVO">
+
+		insert into
+		re_board3(bno, rno, content, writer)
+		values(#{bno}, REBOARD2_RNO_SEQ.nextval, #{content}, #{writer})
+
+	</insert>
+	
+	<delete id="replyDelete" parameterType="com.board.domain.ReplyVO">
+		delete from re_board3
+		where rno = #{rno}
+	
+	</delete>
+
+</mapper>
